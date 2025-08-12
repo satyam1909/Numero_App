@@ -248,7 +248,6 @@ const Calculator = () => {
 
   // NLP-like analysis for career predictions
   const analyzeCareerPatterns = (results: NumerologyResult): CareerSuggestion[] => {
-    const patterns = [];
     
     // Analyze Life Path Number patterns
     const lifePathTraits: { [key: number]: any } = {
