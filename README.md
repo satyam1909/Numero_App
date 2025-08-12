@@ -250,3 +250,47 @@ For support and questions:
 ---
 
 **Made with ❤️ using modern web technologies** 
+
+## 🌐 **Step-by-Step Domain Configuration**
+
+### **Step 1: DNS Configuration**
+
+You need to configure DNS records at your domain registrar. Here are the required DNS records:
+
+```
+<code_block_to_apply_changes_from>
+```
+
+### **Step 2: Add Domain via Vercel Dashboard**
+
+1. **Go to Vercel Dashboard:**
+   - Visit: https://vercel.com/dashboard
+   - Select your `numero-app` project
+
+2. **Navigate to Domains:**
+   - Click **Settings** tab
+   - Click **Domains** in the left sidebar
+
+3. **Add Custom Domain:**
+   - Click **Add Domain**
+   - Enter: `numerologyml.com`
+   - Click **Add**
+
+### **Step 3: Configure DNS at Your Registrar**
+
+**Where did you purchase `numerologyml.com`?**
+- **Namecheap**: Go to Domain List → Manage → Advanced DNS
+- **GoDaddy**: Go to My Domains → DNS → Manage Zones
+- **Cloudflare**: Go to DNS → Records
+- **Google Domains**: Go to DNS → Manage Custom Records
+
+**Add these records:**
+
+| Type | Name | Value | TTL |
+|------|------|-------|-----|
+| A | @ | 76.76.19.19 | 3600 |
+| CNAME | www | cname.vercel-dns.com | 3600 |
+
+### **Step 4: Verify Configuration**
+
+``` 

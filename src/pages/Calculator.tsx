@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import Chatbot from '../components/Chatbot';
 
 interface NumerologyResult {
   lifePath: number;
@@ -51,6 +52,7 @@ const Calculator = () => {
   const [fullName, setFullName] = useState('');
   const [results, setResults] = useState<NumerologyResult | null>(null);
   const [error, setError] = useState('');
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const calculateLifePathNumber = (date: string) => {
     const numbers = date.replace(/\D/g, '');
@@ -984,6 +986,14 @@ const Calculator = () => {
           </motion.div>
         </motion.div>
       )}
+      
+      {/* AI Chatbot */}
+      <Chatbot
+        userBirthDate={birthDate}
+        numerologyData={results}
+        isOpen={isChatbotOpen}
+        onToggle={() => setIsChatbotOpen(!isChatbotOpen)}
+      />
     </motion.div>
   );
 };
