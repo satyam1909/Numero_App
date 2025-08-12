@@ -1,0 +1,44 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 text-gray-900;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 shadow-purple-500/25;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-gray-700 hover:bg-gray-50 shadow-gray-500/25 border border-gray-200;
+  }
+  
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm;
+  }
+  
+  .card {
+    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20;
+  }
+  
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent;
+  }
+  
+  .number-display {
+    @apply text-8xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent animate-pulse;
+  }
+} 
