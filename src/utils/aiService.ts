@@ -54,6 +54,20 @@ export const generateAIResponse = async (
   useExternalLLM: boolean = false
 ): Promise<AIResponse> => {
   
+  // Check if user has provided necessary information
+  if (!context.birthDate || context.lifePathNumber === 0) {
+    return {
+      text: "I'd love to help you with your numerology questions! However, I need your birth date and full name to provide personalized insights. Please enter your information in the calculator above first, then I'll be able to give you detailed answers about your personality, career, relationships, and more based on your unique numerology profile.",
+      confidence: 1.0,
+      context: { questionType: 'setup_required', userMessage },
+      suggestions: [
+        "Enter your birth date and name in the calculator",
+        "Then ask me about your personality",
+        "Or ask about your career path"
+      ]
+    };
+  }
+  
   const questionType = classifyQuestion(userMessage);
   
   if (useExternalLLM) {
