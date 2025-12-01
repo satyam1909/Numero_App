@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Chatbot from '../components/Chatbot';
+import { trackEvent } from '../components/Analytics';
 
 interface NumerologyResult {
   lifePath: number;
@@ -640,6 +641,9 @@ const Calculator = () => {
         expression: calculateExpressionNumber(fullName)
       };
       setResults(result);
+      
+      // Track numerology calculation event
+      trackEvent('calculate_numerology', 'engagement', 'numerology_calculation', 1);
     } catch (err) {
       setError('Please enter valid information');
     }
@@ -826,34 +830,39 @@ const Calculator = () => {
               <h4 className="text-lg font-semibold mb-4 text-center">Number Frequency Analysis</h4>
               <div className="grid grid-cols-9 gap-2 mb-6">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => {
-                  const frequency = analyzePersonalityTraits(results).numberFrequency[num];
+                  const personalityAnalysis = analyzePersonalityTraits(results);
+                  const frequency = personalityAnalysis.numberFrequency[num];
+                  const conductorNumber = personalityAnalysis.conductorNumber;
                   const isMissing = frequency === 0;
                   const isDominant = frequency >= 2;
                   const isWeak = frequency === 1;
+                  const isConductor = num === conductorNumber;
                   
                   return (
                     <div
                       key={num}
                       className={`p-3 rounded-lg text-center ${
-                        isMissing 
-                          ? 'bg-red-100 border-2 border-red-300 text-red-700' 
-                          : isDominant 
-                            ? 'bg-green-100 border-2 border-green-300 text-green-700'
-                            : isWeak
-                              ? 'bg-yellow-100 border-2 border-yellow-300 text-yellow-700'
-                              : 'bg-gray-100 border-2 border-gray-300 text-gray-700'
+                        isConductor
+                          ? 'bg-indigo-200 border-4 border-indigo-500 text-indigo-900 ring-2 ring-indigo-300'
+                          : isMissing 
+                            ? 'bg-red-100 border-2 border-red-300 text-red-700' 
+                            : isDominant 
+                              ? 'bg-green-100 border-2 border-green-300 text-green-700'
+                              : isWeak
+                                ? 'bg-yellow-100 border-2 border-yellow-300 text-yellow-700'
+                                : 'bg-gray-100 border-2 border-gray-300 text-gray-700'
                       }`}
                     >
                       <div className="text-lg font-bold">{num}</div>
                       <div className="text-xs">
-                        {isMissing ? 'Missing' : `${frequency}x`}
+                        {isConductor ? 'Conductor' : isMissing ? 'Missing' : `${frequency}x`}
                       </div>
                     </div>
                   );
                 })}
               </div>
               
-              <div className="grid md:grid-cols-3 gap-4 text-sm">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                 <div className="flex items-center">
                   <div className="w-4 h-4 bg-red-300 rounded mr-2"></div>
                   <span>Missing Numbers</span>
@@ -865,6 +874,10 @@ const Calculator = () => {
                 <div className="flex items-center">
                   <div className="w-4 h-4 bg-yellow-300 rounded mr-2"></div>
                   <span>Weak Numbers (1 time)</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-indigo-500 rounded mr-2 border-2 border-indigo-700"></div>
+                  <span>Conductor Number</span>
                 </div>
               </div>
             </div>

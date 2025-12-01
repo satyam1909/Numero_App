@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { generateAIResponse, NumerologyContext, AIResponse } from '../utils/aiService';
+import { trackEvent } from './Analytics';
 
 interface Message {
   id: string;
@@ -84,6 +85,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ userBirthDate, numerologyData, isOpen
     setMessages(prev => [...prev, userMessage]);
     setInputText('');
     setIsTyping(true);
+    
+    // Track chatbot interaction
+    trackEvent('chatbot_message', 'engagement', 'user_message', 1);
 
     try {
       // Check if user has provided information
