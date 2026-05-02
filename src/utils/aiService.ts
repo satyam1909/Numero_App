@@ -47,13 +47,12 @@ export const classifyQuestion = (text: string): string => {
   return 'general';
 };
 
-// Context-Aware Response Generation with LLM Integration
+// Context-Aware Response Generation
 export const generateAIResponse = async (
   userMessage: string,
-  context: NumerologyContext,
-  useExternalLLM: boolean = false
+  context: NumerologyContext
 ): Promise<AIResponse> => {
-  
+
   // Check if user has provided necessary information
   if (!context.birthDate || context.lifePathNumber === 0) {
     return {
@@ -67,14 +66,9 @@ export const generateAIResponse = async (
       ]
     };
   }
-  
+
   const questionType = classifyQuestion(userMessage);
-  
-  if (useExternalLLM) {
-    return await callExternalLLM(userMessage, context, questionType);
-  } else {
-    return await generateLocalResponse(userMessage, context, questionType);
-  }
+  return await generateLocalResponse(userMessage, context, questionType);
 };
 
 // Local AI Response Generation (Advanced Pattern-Based)
@@ -307,24 +301,6 @@ const getSoulUrgeNeed = (_number: number) => 'emotional security and understandi
 const getPersonalityRelationship = (_number: number) => 'committed and loving';
 const getPartnerQualities = (_number: number) => 'provide stability and emotional depth';
 
-// External LLM Integration (placeholder for future implementation)
-const callExternalLLM = async (
-  userMessage: string,
-  context: NumerologyContext,
-  questionType: string
-): Promise<AIResponse> => {
-  // This would integrate with OpenAI, Anthropic, or other LLM APIs
-  // For now, we'll use the local response as fallback
-  
-  console.log('External LLM integration would be called here');
-  console.log('User message:', userMessage);
-  console.log('Context:', context);
-  console.log('Question type:', questionType);
-  
-  // Placeholder for actual API call
-  return await generateLocalResponse(userMessage, context, questionType);
-};
-
 // Additional response generators
 const generateLuckyElementsInsight = (_message: string, context: NumerologyContext): string => {
   const { lifePathNumber } = context;
@@ -367,9 +343,4 @@ const getHealthActivity = (_number: number) => 'physical activities that challen
 const getSpiritualPath = (_number: number) => 'deep inner exploration and wisdom seeking';
 const getSpiritualPurpose = (_number: number) => 'serve as a spiritual guide and healer';
 
-export default {
-  classifyQuestion,
-  generateAIResponse,
-  generateLocalResponse,
-  callExternalLLM
-}; 
+ 

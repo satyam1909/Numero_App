@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Chatbot from '../components/Chatbot';
 import { trackEvent } from '../components/Analytics';
@@ -622,6 +622,20 @@ const Calculator = () => {
     return luckyElements[results.lifePath] || luckyElements[1];
   };
 
+  const personalityAnalysis = useMemo(
+    () => (results ? analyzePersonalityTraits(results) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [results, birthDate]
+  );
+  const yearlyForecast = useMemo(
+    () => (results ? getYearlyForecast(results) : null),
+    [results]
+  );
+  const luckyElements = useMemo(
+    () => (results ? getLuckyElements(results) : null),
+    [results]
+  );
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -788,25 +802,25 @@ const Calculator = () => {
               <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg text-center">
                 <div className="text-sm text-gray-500">Driver Number</div>
                 <div className="text-2xl font-semibold gradient-text">
-                  {analyzePersonalityTraits(results).driverNumber || '-'}
+                  {personalityAnalysis!.driverNumber || '-'}
                 </div>
               </div>
               <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-lg text-center">
                 <div className="text-sm text-gray-500">Conductor Number</div>
                 <div className="text-2xl font-semibold gradient-text">
-                  {analyzePersonalityTraits(results).conductorNumber || '-'}
+                  {personalityAnalysis!.conductorNumber || '-'}
                 </div>
               </div>
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
                 <div className="text-sm text-gray-500">Name Number (Pythagorean)</div>
                 <div className="text-2xl font-semibold gradient-text">
-                  {analyzePersonalityTraits(results).nameNumberPythagorean}
+                  {personalityAnalysis!.nameNumberPythagorean}
                 </div>
               </div>
               <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
                 <div className="text-sm text-gray-500">Name Number (Chaldean)</div>
                 <div className="text-2xl font-semibold gradient-text">
-                  {analyzePersonalityTraits(results).nameNumberChaldean}
+                  {personalityAnalysis!.nameNumberChaldean}
                 </div>
               </div>
             </div>
@@ -815,8 +829,8 @@ const Calculator = () => {
             <div className="mb-8">
               <h4 className="text-lg font-semibold mb-2 text-center">All Numbers in DOB</h4>
               <div className="flex flex-wrap justify-center gap-2">
-                {analyzePersonalityTraits(results).dobDigits.length > 0 ? (
-                  analyzePersonalityTraits(results).dobDigits.map((d, idx) => (
+                {personalityAnalysis!.dobDigits.length > 0 ? (
+                  personalityAnalysis!.dobDigits.map((d, idx) => (
                     <span key={idx} className="px-2 py-1 bg-gray-100 border border-gray-200 rounded text-sm text-gray-700">{d}</span>
                   ))
                 ) : (
@@ -830,9 +844,8 @@ const Calculator = () => {
               <h4 className="text-lg font-semibold mb-4 text-center">Number Frequency Analysis</h4>
               <div className="grid grid-cols-9 gap-2 mb-6">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => {
-                  const personalityAnalysis = analyzePersonalityTraits(results);
-                  const frequency = personalityAnalysis.numberFrequency[num];
-                  const conductorNumber = personalityAnalysis.conductorNumber;
+                  const frequency = personalityAnalysis!.numberFrequency[num];
+                  const conductorNumber = personalityAnalysis!.conductorNumber;
                   const isMissing = frequency === 0;
                   const isDominant = frequency >= 2;
                   const isWeak = frequency === 1;
@@ -887,7 +900,7 @@ const Calculator = () => {
               <div>
                 <h5 className="text-lg font-semibold mb-3 text-green-600">💪 Strengths</h5>
                 <ul className="space-y-2">
-                  {analyzePersonalityTraits(results).traits.strengths.map((strength, index) => (
+                  {personalityAnalysis!.traits.strengths.map((strength, index) => (
                     <li key={index} className="flex items-start">
                       <span className="text-green-500 mr-2">✓</span>
                       <span className="text-gray-700">{strength}</span>
@@ -899,7 +912,7 @@ const Calculator = () => {
               <div>
                 <h5 className="text-lg font-semibold mb-3 text-red-600">⚠️ Areas for Growth</h5>
                 <ul className="space-y-2">
-                  {analyzePersonalityTraits(results).traits.weaknesses.map((weakness, index) => (
+                  {personalityAnalysis!.traits.weaknesses.map((weakness, index) => (
                     <li key={index} className="flex items-start">
                       <span className="text-red-500 mr-2">•</span>
                       <span className="text-gray-700">{weakness}</span>
@@ -914,7 +927,7 @@ const Calculator = () => {
               <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
                 <h5 className="text-lg font-semibold mb-2 text-blue-600">⚖️ Balance</h5>
                 <ul className="space-y-1 text-sm">
-                  {analyzePersonalityTraits(results).traits.balance.map((item, index) => (
+                  {personalityAnalysis!.traits.balance.map((item, index) => (
                     <li key={index} className="text-gray-700">• {item}</li>
                   ))}
                 </ul>
@@ -923,7 +936,7 @@ const Calculator = () => {
               <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200">
                 <h5 className="text-lg font-semibold mb-2 text-green-600">💡 Recommendations</h5>
                 <ul className="space-y-1 text-sm">
-                  {analyzePersonalityTraits(results).traits.recommendations.map((rec, index) => (
+                  {personalityAnalysis!.traits.recommendations.map((rec, index) => (
                     <li key={index} className="text-gray-700">• {rec}</li>
                   ))}
                 </ul>
@@ -971,17 +984,17 @@ const Calculator = () => {
             transition={{ delay: 1.2 }}
             className="card p-8 mb-8"
           >
-            <h3 className="text-2xl font-bold text-center mb-6">🔮 {getYearlyForecast(results).year} Yearly Forecast</h3>
+            <h3 className="text-2xl font-bold text-center mb-6">🔮 {yearlyForecast!.year} Yearly Forecast</h3>
             <div className="text-center mb-6">
-              <h4 className="text-xl font-semibold gradient-text mb-2">{getYearlyForecast(results).theme}</h4>
-              <p className="text-gray-600">{getYearlyForecast(results).description}</p>
+              <h4 className="text-xl font-semibold gradient-text mb-2">{yearlyForecast!.theme}</h4>
+              <p className="text-gray-600">{yearlyForecast!.description}</p>
             </div>
             
             <div className="grid md:grid-cols-2 gap-8">
               <div>
                 <h5 className="text-lg font-semibold mb-3 text-green-600">🌟 Opportunities</h5>
                 <ul className="space-y-2">
-                  {getYearlyForecast(results).opportunities.map((opportunity, index) => (
+                  {yearlyForecast!.opportunities.map((opportunity, index) => (
                     <li key={index} className="flex items-start">
                       <span className="text-green-500 mr-2">✓</span>
                       <span className="text-gray-700">{opportunity}</span>
@@ -993,7 +1006,7 @@ const Calculator = () => {
               <div>
                 <h5 className="text-lg font-semibold mb-3 text-orange-600">⚠️ Challenges</h5>
                 <ul className="space-y-2">
-                  {getYearlyForecast(results).challenges.map((challenge, index) => (
+                  {yearlyForecast!.challenges.map((challenge, index) => (
                     <li key={index} className="flex items-start">
                       <span className="text-orange-500 mr-2">•</span>
                       <span className="text-gray-700">{challenge}</span>
@@ -1004,8 +1017,8 @@ const Calculator = () => {
             </div>
             
             <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
-              <h5 className="text-lg font-semibold mb-2 text-blue-600">💡 Advice for {getYearlyForecast(results).year}</h5>
-              <p className="text-gray-700">{getYearlyForecast(results).advice}</p>
+              <h5 className="text-lg font-semibold mb-2 text-blue-600">💡 Advice for {yearlyForecast!.year}</h5>
+              <p className="text-gray-700">{yearlyForecast!.advice}</p>
             </div>
           </motion.div>
 
@@ -1022,7 +1035,7 @@ const Calculator = () => {
                 <div className="text-3xl mb-3">🎨</div>
                 <h4 className="font-semibold mb-2">Lucky Colors</h4>
                 <div className="space-y-1">
-                  {getLuckyElements(results).colors.map((color, index) => (
+                  {luckyElements!.colors.map((color, index) => (
                     <div key={index} className="text-sm text-gray-600">{color}</div>
                   ))}
                 </div>
@@ -1032,7 +1045,7 @@ const Calculator = () => {
                 <div className="text-3xl mb-3">🔢</div>
                 <h4 className="font-semibold mb-2">Lucky Numbers</h4>
                 <div className="space-y-1">
-                  {getLuckyElements(results).numbers.map((number, index) => (
+                  {luckyElements!.numbers.map((number, index) => (
                     <div key={index} className="text-sm text-gray-600">{number}</div>
                   ))}
                 </div>
@@ -1042,7 +1055,7 @@ const Calculator = () => {
                 <div className="text-3xl mb-3">📅</div>
                 <h4 className="font-semibold mb-2">Lucky Days</h4>
                 <div className="space-y-1">
-                  {getLuckyElements(results).days.map((day, index) => (
+                  {luckyElements!.days.map((day, index) => (
                     <div key={index} className="text-sm text-gray-600">{day}</div>
                   ))}
                 </div>
@@ -1052,7 +1065,7 @@ const Calculator = () => {
                 <div className="text-3xl mb-3">📆</div>
                 <h4 className="font-semibold mb-2">Lucky Months</h4>
                 <div className="space-y-1">
-                  {getLuckyElements(results).months.map((month, index) => (
+                  {luckyElements!.months.map((month, index) => (
                     <div key={index} className="text-sm text-gray-600">{month}</div>
                   ))}
                 </div>

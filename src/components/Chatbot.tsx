@@ -35,7 +35,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ userBirthDate, numerologyData, isOpen
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [useExternalLLM, setUseExternalLLM] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -123,11 +122,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ userBirthDate, numerologyData, isOpen
       };
 
       // Generate AI response
-      const aiResponse: AIResponse = await generateAIResponse(
-        inputText,
-        context,
-        useExternalLLM
-      );
+      const aiResponse: AIResponse = await generateAIResponse(inputText, context);
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -210,30 +205,14 @@ const Chatbot: React.FC<ChatbotProps> = ({ userBirthDate, numerologyData, isOpen
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  {/* AI Mode Toggle - Only show when user has info */}
-                  {hasUserInfo && (
-                    <button
-                      onClick={() => setUseExternalLLM(!useExternalLLM)}
-                      className={`px-2 py-1 rounded text-xs transition-colors ${
-                        useExternalLLM 
-                          ? 'bg-white/20 text-white' 
-                          : 'bg-white/10 text-white/70 hover:text-white'
-                      }`}
-                      title={useExternalLLM ? 'Switch to Local AI' : 'Switch to Enhanced AI'}
-                    >
-                      {useExternalLLM ? 'Enhanced' : 'Local'}
-                    </button>
-                  )}
-                  <button
-                    onClick={onToggle}
-                    className="text-white/80 hover:text-white transition-colors"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
+                <button
+                  onClick={onToggle}
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
             </div>
 
@@ -308,9 +287,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ userBirthDate, numerologyData, isOpen
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       </div>
-                      <span className="text-xs text-gray-500">
-                        {useExternalLLM ? 'Enhanced AI thinking...' : 'Analyzing...'}
-                      </span>
+                      <span className="text-xs text-gray-500">Analyzing...</span>
                     </div>
                   </div>
                 </motion.div>
